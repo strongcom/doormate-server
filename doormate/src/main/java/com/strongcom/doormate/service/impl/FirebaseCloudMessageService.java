@@ -1,6 +1,11 @@
 package com.strongcom.doormate.service.impl;
 
+import com.strongcom.doormate.domain.Alarm;
+import com.strongcom.doormate.domain.Reminder;
+import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.FcmMessage;
+import com.strongcom.doormate.dto.RequestDTO;
+import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.repository.AlarmRepository;
 import com.strongcom.doormate.repository.ReminderRepository;
 import com.strongcom.doormate.repository.UserRepository;
@@ -15,6 +20,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -71,36 +79,29 @@ public class FirebaseCloudMessageService {
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
-//    public List<Long> showAlarm(AlarmDto alarmDto) {
-//        // 해당 유저 아이디 값이 들어온 것을 확인
-//        User user = userRepository.findByUsername(alarmDto.getUserName()).orElseThrow(() -> new NotFoundException(NOT_FIND_USER_MESSAGE));
-//        List<Alarm> alarmList = alarmRepository.findAllByUser(user);  // 현관문을 나간 사용자의 알람 리스트 전체 조회
-//        List<Long> reminderList = new ArrayList<>();
-//
-//        // 지정된 날짜정보 받아오기
-//        // 현재 시간 정보를 받아옴
-//        LocalDate localDate = alarmDto.getCheckoutTime().toLocalDate();
-//        LocalTime localTime = alarmDto.getCheckoutTime().toLocalTime();
-//
-//        // 현재시간과 알림 테이블에 있는 목록을 조회하여 필터링
-//        // 현재 시간에 해당되는 알림 호출
-//        for (Alarm alarm : alarmList
-//        ) {
-//            if (alarm.getNoticeDate() == localDate)
-//                if (alarm.getStartTime().isAfter(localTime) && alarm.getEndTime().isBefore(localTime))
-//                    reminderList.add(alarm.getReminder().getReminderId());
-//        }
-//        return reminderList;
-//        // 이후 알림 리스트에 해당하는 리마인더 조회 쿼리를 만들어 조회하게 만들기
-//    }
-//
-//    public RequestDTO reminderToFcmMessage(Long id) {
-//        // 알림 서비스에 넘어온 리마인더 id 값을 받아 리마인더 조회후, requestDto에 담아서 넘기기
-//        Reminder reminder = reminderRepository.findById(id).orElseThrow(() -> new RuntimeException(NOT_FIND_REMINDER_MESSAGE));
-//        return RequestDTO.builder()
-//                .title(reminder.getTitle())
-//                .body(reminder.getContent())
-//                .build();
-//    }
+    public List<Reminder> findByNow(String userName, LocalDateTime now) {
+        // 해당 유저 아이디 값이 들어온 것을 확인
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new NotFoundUserException(NOT_FIND_USER_MESSAGE));
+        List<Alarm> alarms = alarmRepository
+                .findAllByNoticeDateAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual
+                        (now.toLocalDate(), now.toLocalTime().minusMinutes(10), now.toLocalTime());
+        List<Reminder> reminders = new ArrayList<>();
+        for (Alarm alarm : alarms
+        ) {
+            if (alarm.getReminder().getUser().equals(user)) {
+                reminders.add(alarm.getReminder());
+            }
+        }
+        return reminders;
+    }
+
+    public RequestDTO reminderToFcmMessage(Long id) {
+        // 알림 서비스에 넘어온 리마인더 id 값을 받아 리마인더 조회후, requestDto에 담아서 넘기기
+        Reminder reminder = reminderRepository.findById(id).orElseThrow(() -> new RuntimeException(NOT_FIND_REMINDER_MESSAGE));
+        return RequestDTO.builder()
+                .title(reminder.getTitle())
+                .body(reminder.getContent())
+                .build();
+    }
 
 }
