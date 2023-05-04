@@ -74,6 +74,23 @@ class ReminderControllerTest {
 
 
     }
+    
+    @Test
+    public void 회원_리마인더_전체조회() throws Exception {
+        // given
+        
+        
+        // when
+        List<Reminder> reminders = reminderController.findAll(1L);
+
+        // then
+        for (Reminder reminder:reminders
+        ) {
+            String title = reminder.getTitle();
+            System.out.println("title = " + title);
+        }
+        
+    }
 
     @Test
     public void 오늘_알림_조회() throws Exception {
