@@ -22,7 +22,7 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.doormate"))
+                .apis(RequestHandlerSelectors.basePackage("com.strongcom.doormate"))
                 .paths(PathSelectors.any())
                 .build();
     }
