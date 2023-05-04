@@ -53,7 +53,7 @@ public class ReminderController {
 
     @GetMapping("/{id}")
     public List<Reminder> findAll(@PathVariable("id") Long id) {
-        return userService.findAll(id);
+        return reminderService.findAllReminder(id);
     }
 
 

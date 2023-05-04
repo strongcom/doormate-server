@@ -34,11 +34,10 @@ public class ReminderService {
         return savedReminder.getReminderId();
     }
 
-    @Transactional
     public List<Reminder> findAllReminder(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundUserException("해당 유저는 존재하지 않습니다."));
-        return user.getReminders();
+        return reminderRepository.findAllByUser(user);
     }
 
     @Transactional
