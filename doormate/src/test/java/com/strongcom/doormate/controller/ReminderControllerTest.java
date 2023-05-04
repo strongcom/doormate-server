@@ -34,7 +34,7 @@ class ReminderControllerTest {
                 .build();
 
         //when
-        String s = reminderController.create(1L, reminderDto);
+        String s = reminderController.create(reminderDto);
 
         //then
         System.out.println(s);
@@ -81,7 +81,7 @@ class ReminderControllerTest {
         
         
         // when
-        List<Reminder> reminders = reminderController.findAll(1L);
+        List<Reminder> reminders = reminderController.findAll();
 
         // then
         for (Reminder reminder:reminders
@@ -98,7 +98,7 @@ class ReminderControllerTest {
 
 
         // when
-        List<Reminder> today = reminderController.findToday(1L);
+        List<Reminder> today = reminderController.findToday();
 
         // then
         for (Reminder reminder : today

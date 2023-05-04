@@ -1,11 +1,14 @@
 package com.strongcom.doormate.controller;
 
 import com.strongcom.doormate.domain.Reminder;
+import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.ReminderDto;
 import com.strongcom.doormate.service.impl.AlarmService;
 import com.strongcom.doormate.service.impl.ReminderService;
 import com.strongcom.doormate.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,9 +26,9 @@ public class ReminderController {
     private static final String DELETE_REMINDER_MESSAGE = "리마인더 삭제 완료";
 
 
-    @PostMapping("/{id}")
-    public String create(@PathVariable("id") Long userId, @RequestBody ReminderDto reminderRequestDto) {
-        Long savedReminderId = reminderService.saveReminder(userId, reminderRequestDto);
+    @PostMapping()
+    public String create(@RequestBody ReminderDto reminderRequestDto) {
+        Long savedReminderId = reminderService.saveReminder(getUser().getUserId(), reminderRequestDto);
         alarmService.saveAlarm(savedReminderId);
         return CREATE_REMINDER_MESSAGE;
     }
@@ -46,15 +49,18 @@ public class ReminderController {
         return DELETE_REMINDER_MESSAGE;
     }
 
-    @GetMapping("/today/{id}")
-    public List<Reminder> findToday(@PathVariable("id") Long userId) {
-        return alarmService.findTodayAlarm(userId);
+    @GetMapping("/today")
+    public List<Reminder> findToday() {
+        return alarmService.findTodayAlarm(getUser().getUserId());
     }
 
-    @GetMapping("/{id}")
-    public List<Reminder> findAll(@PathVariable("id") Long id) {
-        return reminderService.findAllReminder(id);
+    @GetMapping()
+    public List<Reminder> findAll() {
+        return reminderService.findAllReminder(getUser().getUserId());
     }
 
-
+    private static User getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
+    }
 }
