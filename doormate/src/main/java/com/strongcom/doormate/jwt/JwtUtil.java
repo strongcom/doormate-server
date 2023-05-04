@@ -71,6 +71,9 @@ public class JwtUtil implements InitializingBean {
      * @return Authentication
      */
     public Authentication getAuthentication(String token) {
+        /**
+         * Claims는 JWT의 body이고 JWT 생성자가 JWT를 받는이들에게 제시하기 바라는 정보를 포함한다.
+         */
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -88,6 +91,11 @@ public class JwtUtil implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
+    /**
+     * afterPropertiesSet()은 InintializingBean 인터페이스의 메소드로 BeanFactory에 의해 모든 property 가 설정되고 난 뒤 실행되는 메소드
+     * 주로 실행시점의 custom 초기화 로직이 필요하거나 주입받은 property 를 확인하는 용도로 사용됩니다.
+     * @throws Exception
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
         // 생성자에 주입받은 secret key decoding 처리
