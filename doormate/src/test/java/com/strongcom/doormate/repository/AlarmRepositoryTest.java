@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class AlarmRepositoryTest {
@@ -30,6 +29,20 @@ class AlarmRepositoryTest {
             String title = alarm.getReminder().getTitle();
             System.out.println("title = " + title);
         }
+
+    }
+
+    @Test
+    public void 오늘_알람리스트_전체삭제() throws Exception {
+
+        // given
+        LocalDate today = LocalDate.now();
+
+        // when
+        alarmRepository.deleteAllByNoticeDate(today);
+
+        // then
+
 
     }
 
