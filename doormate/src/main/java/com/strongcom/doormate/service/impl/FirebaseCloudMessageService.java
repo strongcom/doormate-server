@@ -1,5 +1,9 @@
 package com.strongcom.doormate.service.impl;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.strongcom.doormate.domain.Alarm;
 import com.strongcom.doormate.domain.Reminder;
 import com.strongcom.doormate.domain.User;
@@ -9,18 +13,14 @@ import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.repository.AlarmRepository;
 import com.strongcom.doormate.repository.ReminderRepository;
 import com.strongcom.doormate.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +79,7 @@ public class FirebaseCloudMessageService {
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
+    @Transactional
     public List<Reminder> findByNow(String userName, LocalDateTime now) {
         // 해당 유저 아이디 값이 들어온 것을 확인
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new NotFoundUserException(NOT_FIND_USER_MESSAGE));
@@ -95,6 +96,7 @@ public class FirebaseCloudMessageService {
         return reminders;
     }
 
+    @Transactional
     public RequestDTO reminderToFcmMessage(Long id) {
         // 알림 서비스에 넘어온 리마인더 id 값을 받아 리마인더 조회후, requestDto에 담아서 넘기기
         Reminder reminder = reminderRepository.findById(id).orElseThrow(() -> new RuntimeException(NOT_FIND_REMINDER_MESSAGE));
