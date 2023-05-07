@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -51,5 +52,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundUserException("회원정보가 존재하지 않습니다."));
         return user.getReminders();
     }
+
+
 
 }

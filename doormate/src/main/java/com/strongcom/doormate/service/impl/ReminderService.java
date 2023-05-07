@@ -26,16 +26,16 @@ public class ReminderService {
     private static final String DELETE_SUCCESS_MESSAGE = "리마인더 삭제 완료";
 
     @Transactional
-    public Long saveReminder(Long id, ReminderDto reminderDto) {
-        User user = userRepository.findById(id)
+    public Long saveReminder(String username, ReminderDto reminderDto) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundUserException("가입되지 않은 유저입니다. 회원가입 후 리마인더를 등록해주세요."));
         Reminder reminder = Reminder.createReminder(user, reminderDto);
         Reminder savedReminder = reminderRepository.save(reminder);
         return savedReminder.getReminderId();
     }
 
-    public List<Reminder> findAllReminder(Long userId) {
-        User user = userRepository.findById(userId)
+    public List<Reminder> findAllReminder(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundUserException("해당 유저는 존재하지 않습니다."));
         return reminderRepository.findAllByUser(user);
     }
@@ -52,5 +52,7 @@ public class ReminderService {
     public void deleteReminder(Long reminderId) {
         reminderRepository.deleteById(reminderId);
     }
+
+
 
 }
