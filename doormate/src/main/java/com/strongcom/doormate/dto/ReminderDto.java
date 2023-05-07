@@ -1,8 +1,7 @@
 package com.strongcom.doormate.dto;
 
-import com.strongcom.doormate.domain.Reminder;
-import com.strongcom.doormate.domain.RepetitionPeriod;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.strongcom.doormate.domain.RepetitionPeriod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,32 +21,21 @@ public class ReminderDto {
     private String title;
 
     private String content;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startDate;
+    private LocalDate startDate = LocalDate.now();
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate endDate;
+    private LocalDate endDate = LocalDate.now();
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-    private LocalTime startTime;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-    private LocalTime endTime;
+    private LocalTime startTime = LocalTime.now();
 
-    private RepetitionPeriod repetitionPeriod;  // 반복주기(매일, 매주, 매월, 매년)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+    private LocalTime endTime = LocalTime.of(23, 59);
+
+    private RepetitionPeriod repetitionPeriod = RepetitionPeriod.BASIC;  // 반복주기(매일, 매주, 매월, 매년)
 
     private String repetitionDay;   // 반복 주기(요일별)
 
-
-
-    public Reminder toReminder(ReminderDto reminderDto) {
-        return Reminder.builder()
-                .title(this.title)
-                .content(this.content)
-                .startDate(this.startDate)
-                .endDate(this.endDate)
-                .startTime(this.startTime)
-                .endTime(this.endTime)
-                .repetitionPeriod(this.repetitionPeriod)
-                .repetitionDay(this.repetitionDay)
-                .build();
-    }
 }
