@@ -1,6 +1,7 @@
 package com.strongcom.doormate.jwt;
 
 import com.strongcom.doormate.crypto.AES256Cipher;
+import com.strongcom.doormate.security.jwt.TokenProvider;
 import com.strongcom.doormate.util.CookieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,18 +12,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilter extends GenericFilterBean {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
@@ -49,28 +54,47 @@ public class JwtFilter extends OncePerRequestFilter {
 
     // AccessToken 정보를 저장하기 위한 클래스
     private CookieUtil cookieUtil;
+    ;
+    private TokenProvider tokenProvider;
 
     // Token 사용자 정보를 위한 Key
     private static final String AUTHORITIES_KEY = "auth";
 
-    public JwtFilter(JwtUtil jwtUtil, RestTemplate restTemplate, CookieUtil cookieUtil) {
+    public JwtFilter(JwtUtil jwtUtil, RestTemplate restTemplate, CookieUtil cookieUtil, TokenProvider tokenProvider) {
         this.jwtUtil = jwtUtil;
         this.restTemplate = restTemplate;
         this.cookieUtil = cookieUtil;
+        this.tokenProvider=tokenProvider;
     }
 
     @Override
-    public void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws ServletException, IOException  {
 
-        // Filter 가 두번씨 호출 되는 부분을 처리하기 위한 로직
-        if (httpServletRequest.getAttribute(FILTER_APPLIED) != null) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
-            return ;
-        }
+//        // Filter 가 두번씨 호출 되는 부분을 처리하기 위한 로직
+//        if (httpServletRequest.getAttribute(FILTER_APPLIED) != null) {
+//            filterChain.doFilter(httpServletRequest, httpServletResponse);
+//            return ;
+//        }
+
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+
+        String jwt = resolveToken(httpServletRequest);
 
         // Request URI
         String requestURI = httpServletRequest.getRequestURI();
+
+
+        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+            Authentication authentication = tokenProvider.getAuthentication(jwt);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+        } else {
+            logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+        }
+
+
 
         /******************************************************************************************************************************
          * 토큰 유효성 체크                                                                                                           *
@@ -262,5 +286,13 @@ public class JwtFilter extends OncePerRequestFilter {
         ResponseEntity<String> responseEntity = restTemplate.postForEntity( "http://localhost:8080/token/remove/refresh-token", request , String.class);
 
         refreshToken = responseEntity.getBody();
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 }

@@ -49,8 +49,8 @@ public class AlarmService {
     }
 
     @Transactional
-    public List<Reminder> findTodayAlarm(Long userId) {
-        User user = userRepository.findById(userId)
+    public List<Reminder> findTodayAlarm(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundUserException("존재하지 않는 유저입니다."));
         List<Alarm> todayAlarmList = alarmRepository.findAllToday(LocalDate.now());
         List<Reminder> reminders = new ArrayList<>();
@@ -62,4 +62,6 @@ public class AlarmService {
         }
         return reminders;
     }
+
+
 }

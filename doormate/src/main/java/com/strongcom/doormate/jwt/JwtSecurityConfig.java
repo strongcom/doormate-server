@@ -1,5 +1,6 @@
 package com.strongcom.doormate.jwt;
 
+import com.strongcom.doormate.security.jwt.TokenProvider;
 import com.strongcom.doormate.util.CookieUtil;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,15 +19,18 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
 
     private CookieUtil cookieUtil;
 
-    public JwtSecurityConfig(JwtUtil jwtUtil, RestTemplate restTemplate, CookieUtil cookieUtil) {
+    private TokenProvider tokenProvider;
+
+    public JwtSecurityConfig(JwtUtil jwtUtil, RestTemplate restTemplate, CookieUtil cookieUtil, TokenProvider tokenProvider) {
         this.jwtUtil = jwtUtil;
         this.restTemplate = restTemplate;
         this.cookieUtil = cookieUtil;
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        JwtFilter customFilter = new JwtFilter(jwtUtil, restTemplate, cookieUtil);
+        JwtFilter customFilter = new JwtFilter(jwtUtil, restTemplate, cookieUtil, tokenProvider);
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

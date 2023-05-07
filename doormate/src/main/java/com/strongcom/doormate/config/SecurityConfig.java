@@ -5,6 +5,7 @@ import com.strongcom.doormate.jwt.JwtAccessDeniedHandler;
 import com.strongcom.doormate.jwt.JwtAuthenticationEntryPoint;
 import com.strongcom.doormate.jwt.JwtSecurityConfig;
 import com.strongcom.doormate.jwt.JwtUtil;
+import com.strongcom.doormate.security.jwt.TokenProvider;
 import com.strongcom.doormate.util.CookieUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CorsFilter;
 
@@ -29,9 +31,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
+    private TokenProvider tokenProvider;
 
-    public SecurityConfig(JwtUtil jwtUtil, RestTemplate restTemplate, CookieUtil cookieUtil, CorsFilter corsFilter,
+
+    public SecurityConfig(TokenProvider tokenProvider, JwtUtil jwtUtil, RestTemplate restTemplate, CookieUtil cookieUtil, CorsFilter corsFilter,
                           JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+        this.tokenProvider = tokenProvider;
         this.jwtUtil = jwtUtil;
         this.restTemplate = restTemplate;
         this.cookieUtil = cookieUtil;
@@ -61,6 +66,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 // token을 사용하는 방식이기 때문에 csrf를 disable합니다.
                 .csrf().disable()
+
+                .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -91,7 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
 
                 .and()
-                .apply(new JwtSecurityConfig(jwtUtil, restTemplate, cookieUtil));
+                .apply(new JwtSecurityConfig(jwtUtil, restTemplate, cookieUtil, tokenProvider));
     }
 }
 
