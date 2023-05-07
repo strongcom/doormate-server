@@ -34,7 +34,6 @@ public class AlarmService {
                 .orElseThrow(() -> new NotFoundReminderException(NOT_FIND_REMINDER_MESSAGE));
         List<LocalDate> dates = reminder.findByDate();
         for (LocalDate date : dates) {
-            System.out.println(date);
             Alarm alarm = Alarm.createAlarm(date,reminder);
             alarmRepository.save(alarm);
         }
