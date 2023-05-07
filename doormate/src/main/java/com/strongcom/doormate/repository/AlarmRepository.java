@@ -21,6 +21,6 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     List<Alarm> findAllToday(LocalDate today);
 
     @Transactional
-    void deleteAllByNoticeDate(LocalDate today);
+    void deleteAllByNoticeDateLessThanEqual(LocalDate today);
 
 }
