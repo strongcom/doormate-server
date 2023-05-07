@@ -32,6 +32,7 @@ public class TokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
 
     private final String secret;
+    private final long tokenValidityInMilliseconds;
 
     private Key key;
 
@@ -42,9 +43,12 @@ public class TokenProvider implements InitializingBean {
      */
 
     public TokenProvider(
-            @Value("${jwt.secret}") String secret) {
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
         this.secret = secret;
+        this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
     }
+
 
     /**
      * 토큰 생성
@@ -58,11 +62,16 @@ public class TokenProvider implements InitializingBean {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        Calendar c = Calendar.getInstance();
 
-        // AccessToken 만료시간 설정
-        c.add(Calendar.MINUTE, 2);
-        Date validity = c.getTime();
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+
+//        Calendar c = Calendar.getInstance();
+//
+//
+//        // AccessToken 만료시간 설정
+//        c.add(Calendar.MINUTE, 2);
+//        Date validity = c.getTime();
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
