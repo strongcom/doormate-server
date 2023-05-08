@@ -44,11 +44,10 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
     private Set<Authority> authorities;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)  // 고아객체가 되었을 경우, 자식 엔티티 자동 삭제
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Reminder> reminders = new ArrayList<>();
 
     @Column(name = "target_token", length = 200)
     private String targetToken;
-
 
 }
