@@ -3,6 +3,7 @@ package com.strongcom.doormate.service.impl;
 import com.strongcom.doormate.domain.Alarm;
 import com.strongcom.doormate.domain.Reminder;
 import com.strongcom.doormate.domain.User;
+import com.strongcom.doormate.dto.ReminderResponseDto;
 import com.strongcom.doormate.exception.NotFoundReminderException;
 import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.repository.AlarmRepository;
@@ -48,15 +49,15 @@ public class AlarmService {
     }
 
     @Transactional
-    public List<Reminder> findTodayAlarm(String username) {
+    public List<ReminderResponseDto> findTodayAlarm(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundUserException("존재하지 않는 유저입니다."));
         List<Alarm> todayAlarmList = alarmRepository.findAllToday(LocalDate.now());
-        List<Reminder> reminders = new ArrayList<>();
+        List<ReminderResponseDto> reminders = new ArrayList<>();
         for (Alarm alarm : todayAlarmList
         ) {
             if (alarm.getReminder().getUser().equals(user)) {
-                reminders.add(alarm.getReminder());
+                reminders.add(alarm.getReminder().toReminderResponseDto());
             }
         }
         return reminders;

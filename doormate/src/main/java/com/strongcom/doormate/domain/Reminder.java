@@ -1,10 +1,10 @@
 package com.strongcom.doormate.domain;
 
 import com.strongcom.doormate.dto.ReminderDto;
+import com.strongcom.doormate.dto.ReminderResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @Entity
 @NoArgsConstructor
 @Getter
-@Setter
 public class Reminder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +51,7 @@ public class Reminder {
 
     private String repetitionDay;
 
-    @OneToMany(mappedBy = "reminder", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reminder", cascade = CascadeType.ALL, orphanRemoval = true)  // 고아객체가 되었을 경우, 자식 엔티티 자동 삭제
     private List<Alarm> alarms = new ArrayList<>();
 
     /**
@@ -101,17 +100,31 @@ public class Reminder {
                 .build();
     }
 
-    public static Reminder repetitionReminder(LocalDate localDate, Reminder reminder) {
-        return Reminder.builder()
-                .user(reminder.getUser())
-                .title(reminder.getTitle())
-                .content(reminder.getContent())
-                .startTime(reminder.getStartTime())
-                .endTime(reminder.getEndTime())
-                .startDate(localDate)
-                .endDate(localDate)
-                .repetitionPeriod(reminder.getRepetitionPeriod())
-                .repetitionDay(reminder.getRepetitionDay())
+//    public static Reminder repetitionReminder(LocalDate localDate, Reminder reminder) {
+//        return Reminder.builder()
+//                .user(reminder.getUser())
+//                .title(reminder.getTitle())
+//                .content(reminder.getContent())
+//                .startTime(reminder.getStartTime())
+//                .endTime(reminder.getEndTime())
+//                .startDate(localDate)
+//                .endDate(localDate)
+//                .repetitionPeriod(reminder.getRepetitionPeriod())
+//                .repetitionDay(reminder.getRepetitionDay())
+//                .build();
+//    }
+
+    public ReminderResponseDto toReminderResponseDto() {
+        return ReminderResponseDto.builder()
+                .title(this.title)
+                .content(this.content)
+                .subTitle(this.subTitle)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .startTime(this.startTime)
+                .endTime(this.endTime)
+                .repetitionPeriod(this.repetitionPeriod)
+                .repetitionDay(this.repetitionDay)
                 .build();
     }
 
@@ -136,16 +149,15 @@ public class Reminder {
 
     // 리마인더 날짜 리스트를 만들어야함 (매일, 매주, 매달, 매년)
     public void addSubtitle(String repetitionDay, RepetitionPeriod repetitionPeriod, LocalTime startTime, LocalTime endTime) {
-        String repetition = "";
+        String repetition = "알람, ";
 
-        if (repetitionPeriod == RepetitionPeriod.DAILY) repetition = "매일" + " " + startTime + " - " + endTime + " 사이 알림";
+        if (repetitionPeriod == RepetitionPeriod.DAILY) repetition += "매일" + " " + startTime + " - " + endTime + " 사이 알림";
         if (repetitionPeriod == RepetitionPeriod.WEEKLY)
-            repetition = "매주 " + RepetitionDay.toDay(repetitionDay) + " " + startTime + " - " + endTime + " 사이 알림";
-        else if (repetitionPeriod == RepetitionPeriod.MONTHLY) repetition = "매달" + " " + startTime + " - " + endTime + " 사이 알림";
-        else if (repetitionPeriod == RepetitionPeriod.YEARLY) repetition = "매년" + " " + startTime + " - " + endTime + " 사이 알림";
-        else if (repetitionPeriod == RepetitionPeriod.BASIC) repetition = "";
+            repetition += "매주 " + RepetitionDay.toDay(repetitionDay) + " " + startTime + " - " + endTime + " 사이 알림";
+        else if (repetitionPeriod == RepetitionPeriod.MONTHLY) repetition += "매달" + " " + startTime + " - " + endTime + " 사이 알림";
+        else if (repetitionPeriod == RepetitionPeriod.YEARLY) repetition += "매년" + " " + startTime + " - " + endTime + " 사이 알림";
+        else if (repetitionPeriod == RepetitionPeriod.BASIC) repetition += "일회성 알림";
 
-        repetition = "알람 ";
         this.subTitle = repetition;
     }
 
