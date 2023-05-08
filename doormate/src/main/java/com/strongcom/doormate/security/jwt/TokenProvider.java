@@ -32,7 +32,6 @@ public class TokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
 
     private final String secret;
-    private final long tokenValidityInMilliseconds;
 
     private Key key;
 
@@ -43,10 +42,8 @@ public class TokenProvider implements InitializingBean {
      */
 
     public TokenProvider(
-            @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
+            @Value("${jwt.secret}") String secret) {
         this.secret = secret;
-        this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
     }
 
 
@@ -63,15 +60,12 @@ public class TokenProvider implements InitializingBean {
                 .collect(Collectors.joining(","));
 
 
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+        Calendar c = Calendar.getInstance();
 
-//        Calendar c = Calendar.getInstance();
-//
-//
-//        // AccessToken 만료시간 설정
-//        c.add(Calendar.MINUTE, 2);
-//        Date validity = c.getTime();
+
+        // AccessToken 만료시간 설정
+        c.add(Calendar.MINUTE, 2);
+        Date validity = c.getTime();
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
