@@ -116,6 +116,7 @@ public class Reminder {
 
     public ReminderResponseDto toReminderResponseDto() {
         return ReminderResponseDto.builder()
+                .id(this.reminderId)
                 .title(this.title)
                 .content(this.content)
                 .subTitle(this.subTitle)

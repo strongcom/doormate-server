@@ -14,6 +14,8 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Builder
 public class ReminderResponseDto {
+    private Long id;
+
     private String title;
 
     private String content;
