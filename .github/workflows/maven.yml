@@ -27,6 +27,12 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
+
+    - name: cd work dir
+      run: |
+        cd doormate
+      shell: sh
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
