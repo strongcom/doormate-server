@@ -28,6 +28,12 @@ jobs:
           echo "${{ secrets.PROPERTIES }}" > ./application.properties
         shell: bash
 
+      - name: Make firebase folder
+        run: |
+          cd doormate/src/main/resources/
+          mkdir firebase
+        shell: bash
+
       - name: Create firebase key json
         id: create-json
         uses: jsdaniell/create-json@v1.2.2
