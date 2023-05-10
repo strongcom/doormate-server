@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 
+@Table(name="USER")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,11 +25,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(name = "username", length = 50, unique = true)
+    @Column(name = "USERNAME", length = 50, unique = true)
     private String username;
 
     @JsonIgnore
-    @Column(name = "password", length = 100)
+    @Column(name = "PASSWORD", length = 100)
     private String password;
 
     @Column(name = "nickname", length = 50)

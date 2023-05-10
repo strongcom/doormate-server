@@ -1,11 +1,13 @@
 package com.strongcom.doormate.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "authority")
+@Table(name = "AUTHORITY")
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,6 +16,7 @@ import javax.persistence.*;
 public class Authority {
 
     @Id
-    @Column(name = "authority_name", length = 50)
+    @Column(name = "AUTHORITY_NAME", length = 50)
     private String authorityName;
+
 }
