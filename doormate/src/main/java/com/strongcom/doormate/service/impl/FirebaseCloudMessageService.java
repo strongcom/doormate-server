@@ -9,6 +9,7 @@ import com.strongcom.doormate.domain.Reminder;
 import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.FcmMessage;
 import com.strongcom.doormate.dto.RequestDTO;
+import com.strongcom.doormate.exception.NotFoundReminderException;
 import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.repository.AlarmRepository;
 import com.strongcom.doormate.repository.ReminderRepository;
@@ -91,7 +92,12 @@ public class FirebaseCloudMessageService {
         ) {
             if (alarm.getReminder().getUser().equals(user)) {
                 reminders.add(alarm.getReminder());
+                alarmRepository.deleteById(alarm.getId());
             }
+//            alarmRepository.deleteById(alarm.getId());
+        }
+        if (reminders.size() == 0) {
+            throw new NotFoundReminderException("현재 예정된 알림이 없습니다.");
         }
         return reminders;
     }

@@ -66,6 +66,23 @@ public class Reminder {
         user.getReminders().add(this);
     }
 
+    public void addAlarm(Alarm alarm) {
+        this.getAlarms().add(alarm);
+        alarm.setReminder(this);
+    }
+
+    public void cleanAlarm() {
+        this.getAlarms().clear();
+    }
+
+    public void clean() {
+        if (this.getAlarms().size() == 0) {
+            this.getAlarms().clear();
+        }
+    }
+
+
+
     @Builder
     public Reminder(User user, String title, String content,
                     LocalTime startTime, LocalTime endTime,
@@ -100,20 +117,6 @@ public class Reminder {
                 .repetitionDay(reminderDto.getRepetitionDay())
                 .build();
     }
-
-//    public static Reminder repetitionReminder(LocalDate localDate, Reminder reminder) {
-//        return Reminder.builder()
-//                .user(reminder.getUser())
-//                .title(reminder.getTitle())
-//                .content(reminder.getContent())
-//                .startTime(reminder.getStartTime())
-//                .endTime(reminder.getEndTime())
-//                .startDate(localDate)
-//                .endDate(localDate)
-//                .repetitionPeriod(reminder.getRepetitionPeriod())
-//                .repetitionDay(reminder.getRepetitionDay())
-//                .build();
-//    }
 
     public ReminderResponseDto toReminderResponseDto() {
         return ReminderResponseDto.builder()
