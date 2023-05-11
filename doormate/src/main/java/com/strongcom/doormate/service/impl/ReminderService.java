@@ -43,7 +43,11 @@ public class ReminderService {
         List<ReminderResponseDto> reminderDtos = new ArrayList<>();
         for (Reminder reminder : reminders
         ) {
-            reminderDtos.add(reminder.toReminderResponseDto());
+            if(reminder.getAlarms().size() > 0)
+                reminderDtos.add(reminder.toReminderResponseDto());
+            else if (reminder.getAlarms().size() == 0) {
+                reminderRepository.deleteById(reminder.getReminderId());
+            }
         }
         return reminderDtos;
     }
@@ -53,11 +57,15 @@ public class ReminderService {
         Reminder reminder = reminderRepository.findById(reminderId)
                 .orElseThrow(() -> new NotFoundReminderException("해당 리마인더는 존재하지 않습니다."));
         reminder.setReminder(reminderDto);
+        reminder.cleanAlarm();
         //Reminder savedReminder = reminderRepository.save(reminder);
         return reminder.getReminderId();
     }
 
     public void deleteReminder(Long reminderId) {
+        Reminder reminder = reminderRepository.findById(reminderId).orElseThrow(()
+                -> new NotFoundReminderException("해당 리마인더는 존재하지 않습니다."));
+        reminder.cleanAlarm();
         reminderRepository.deleteById(reminderId);
     }
 

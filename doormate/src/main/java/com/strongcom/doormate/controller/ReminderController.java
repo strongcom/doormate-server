@@ -35,14 +35,14 @@ public class ReminderController {
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long reminderId, @RequestBody ReminderDto reminderDto) {
         Long savedReminder = reminderService.updateReminder(reminderId, reminderDto);
-        alarmService.deleteAlarm(reminderId);
+//        alarmService.deleteAlarm(reminderId);
         alarmService.saveAlarm(savedReminder);
         return UPDATE_REMINDER_MESSAGE;
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long reminderId) {
-        alarmService.deleteAlarm(reminderId);
+//        alarmService.deleteAlarm(reminderId);
         reminderService.deleteReminder(reminderId);
         return DELETE_REMINDER_MESSAGE;
     }

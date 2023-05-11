@@ -36,16 +36,18 @@ public class AlarmService {
         List<LocalDate> dates = reminder.findByDate();
         for (LocalDate date : dates) {
             Alarm alarm = Alarm.createAlarm(date,reminder);
-            alarmRepository.save(alarm);
+            reminder.addAlarm(alarm);
+//            alarmRepository.save(alarm);
         }
         return SUCCESS_SAVED_ALARM_MESSAGE;
     }
 
     @Transactional
-    public void deleteAlarm(Long reminder_id) {
-        Reminder reminder = reminderRepository.findById(reminder_id)
-                .orElseThrow(() -> new NotFoundReminderException("해당 리마인더가 존재하지 않습니다."));
-        alarmRepository.deleteAllByReminder(reminder);
+    public void deleteOneAlarm(Alarm alarm) {
+        if (alarm.getReminder().getAlarms().size() == 1) {
+            reminderRepository.deleteById(alarm.getReminder().getReminderId());
+        }
+        alarmRepository.deleteById(alarm.getId());
     }
 
     @Transactional
