@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "AUTHORITY")
+@Table(name = "authority")
 @Data
 @Builder
 @AllArgsConstructor
