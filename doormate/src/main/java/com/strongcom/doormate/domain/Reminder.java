@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Entity
 @NoArgsConstructor
 @Getter
+@Table(name="reminder")
 public class Reminder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
