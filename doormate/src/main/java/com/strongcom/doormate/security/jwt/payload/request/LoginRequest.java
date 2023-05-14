@@ -22,4 +22,7 @@ public class LoginRequest {
     @NotNull
     @Size
     private String password;
+
+    @NotNull
+    private String targetToken;
 }
