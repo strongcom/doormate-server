@@ -1,6 +1,8 @@
 package com.strongcom.doormate.domain;
 
 import com.strongcom.doormate.dto.ReminderDto;
+import com.strongcom.doormate.dto.ReminderPageRespDto;
+import com.strongcom.doormate.dto.ReminderRespDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -148,6 +150,14 @@ public class Reminder {
         this.endDate = reminderDto.getEndDate();
         this.repetitionPeriod = reminderDto.getRepetitionPeriod();
         this.repetitionDay = reminderDto.getRepetitionDay();
+    }
+
+    public ReminderPageRespDto setReminderPageRespDto() {
+        return ReminderPageRespDto.builder()
+                .reminderId(this.reminderId)
+                .title(this.title)
+                .content(this.content)
+                .build();
     }
 
     // 리마인더 날짜 리스트를 만들어야함 (매일, 매주, 매달, 매년)
