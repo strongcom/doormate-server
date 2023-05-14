@@ -3,7 +3,8 @@ package com.strongcom.doormate.service.impl;
 import com.strongcom.doormate.domain.Reminder;
 import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.ReminderDto;
-import com.strongcom.doormate.dto.ReminderResponseDto;
+import com.strongcom.doormate.dto.ReminderPageRespDto;
+import com.strongcom.doormate.dto.ReminderRespDto;
 import com.strongcom.doormate.exception.NotFoundReminderException;
 import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.repository.ReminderRepository;
@@ -36,20 +37,24 @@ public class ReminderService {
         return savedReminder.getReminderId();
     }
 
-    public List<ReminderResponseDto> findAllReminder(String username) {
+    public List<ReminderPageRespDto> findAllReminder(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundUserException("해당 유저는 존재하지 않습니다."));
         List<Reminder> reminders = reminderRepository.findAllByUser(user);
-        List<ReminderResponseDto> reminderDtos = new ArrayList<>();
-        for (Reminder reminder : reminders
-        ) {
-            if(reminder.getAlarms().size() > 0)
-                reminderDtos.add(reminder.toReminderResponseDto());
-            else if (reminder.getAlarms().size() == 0) {
-                reminderRepository.deleteById(reminder.getReminderId());
-            }
+        List<ReminderPageRespDto> reminderList = new ArrayList<>();
+        for (Reminder reminder : reminders) {
+            if (reminder.getAlarms().size() > 0)
+                reminderList.add(reminder.setReminderPageRespDto());
+            else reminderRepository.deleteById(reminder.getReminderId());
         }
-        return reminderDtos;
+
+            return reminderList;
+        }
+
+    public ReminderRespDto findOneReminder(Long reminderId) {
+        Reminder reminder = reminderRepository.findById(reminderId)
+                .orElseThrow(() -> new NotFoundReminderException("해당 리마인더는 존재하지 않습니다."));
+        return reminder.setReminderRespDto();
     }
 
     @Transactional
