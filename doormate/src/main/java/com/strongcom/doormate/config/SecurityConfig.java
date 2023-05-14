@@ -99,7 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
 
                 .and()
-                .apply(new JwtSecurityConfig(jwtUtil, restTemplate, cookieUtil, tokenProvider));
+                .apply(new JwtSecurityConfig(jwtUtil, restTemplate, cookieUtil));
     }
 }
 

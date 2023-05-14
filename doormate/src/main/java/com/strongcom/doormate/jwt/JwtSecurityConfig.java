@@ -19,18 +19,16 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
 
     private CookieUtil cookieUtil;
 
-    private TokenProvider tokenProvider;
 
-    public JwtSecurityConfig(JwtUtil jwtUtil, RestTemplate restTemplate, CookieUtil cookieUtil, TokenProvider tokenProvider) {
+    public JwtSecurityConfig(JwtUtil jwtUtil, RestTemplate restTemplate, CookieUtil cookieUtil) {
         this.jwtUtil = jwtUtil;
         this.restTemplate = restTemplate;
         this.cookieUtil = cookieUtil;
-        this.tokenProvider = tokenProvider;
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        JwtFilter customFilter = new JwtFilter(jwtUtil, restTemplate, cookieUtil, tokenProvider);
+        JwtFilter customFilter = new JwtFilter(jwtUtil, restTemplate, cookieUtil);
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
