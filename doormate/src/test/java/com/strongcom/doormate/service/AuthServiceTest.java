@@ -24,7 +24,7 @@ public class AuthServiceTest {
         LoginRequest request = LoginRequest.builder()
                 .username("admin")
                 .password("admin")
-                .targetToken("null")
+                //.targetToken("null")
                 .build();
 
         TokenResponse tokenResponse = authService.generateAccessTokenAndRefreshToken(request);

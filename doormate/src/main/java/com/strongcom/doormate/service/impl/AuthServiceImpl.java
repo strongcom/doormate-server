@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 2. refreshToken 생성
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.MINUTE, 60); // 60분 뒤 설정
+        c.add(Calendar.DAY_OF_MONTH, 60);
 
         RefreshToken refreshTokenRequest = RefreshToken.builder()
                 .id(UUID.randomUUID().toString())
@@ -145,7 +145,7 @@ public class AuthServiceImpl implements AuthService {
             // refreshToken 발급
             Calendar c = Calendar.getInstance();
 
-            c.add(Calendar.MINUTE, 60);
+            c.add(Calendar.DAY_OF_MONTH, 60);
 
             RefreshToken refreshTokenRequest = RefreshToken.builder()
                     .id(UUID.randomUUID().toString())
