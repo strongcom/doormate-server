@@ -36,6 +36,6 @@ public class FCMController {
                     reminder.getTitle(),
                     reminder.getContent());
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("푸시 알림 전송 완료");
     }
 }
