@@ -1,8 +1,7 @@
 package com.strongcom.doormate.domain;
 
 import com.strongcom.doormate.dto.ReminderDto;
-import com.strongcom.doormate.dto.ReminderPageRespDto;
-import com.strongcom.doormate.dto.ReminderRespDto;
+import com.strongcom.doormate.dto.ReminderResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,7 +53,7 @@ public class Reminder {
 
     private String repetitionDay;
 
-    @OneToMany(mappedBy = "reminder", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reminder", cascade = CascadeType.ALL, orphanRemoval = true)  // 고아객체가 되었을 경우, 자식 엔티티 자동 삭제
     private List<Alarm> alarms = new ArrayList<>();
 
     /**
@@ -67,6 +66,23 @@ public class Reminder {
         this.user = user;
         user.getReminders().add(this);
     }
+
+    public void addAlarm(Alarm alarm) {
+        this.getAlarms().add(alarm);
+        alarm.setReminder(this);
+    }
+
+    public void cleanAlarm() {
+        this.getAlarms().clear();
+    }
+
+    public void clean() {
+        if (this.getAlarms().size() == 0) {
+            this.getAlarms().clear();
+        }
+    }
+
+
 
     @Builder
     public Reminder(User user, String title, String content,

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -54,17 +53,15 @@ public class JwtFilter extends GenericFilterBean {
 
     // AccessToken 정보를 저장하기 위한 클래스
     private CookieUtil cookieUtil;
-    ;
-    private TokenProvider tokenProvider;
+
 
     // Token 사용자 정보를 위한 Key
     private static final String AUTHORITIES_KEY = "auth";
 
-    public JwtFilter(JwtUtil jwtUtil, RestTemplate restTemplate, CookieUtil cookieUtil, TokenProvider tokenProvider) {
+    public JwtFilter(JwtUtil jwtUtil, RestTemplate restTemplate, CookieUtil cookieUtil) {
         this.jwtUtil = jwtUtil;
         this.restTemplate = restTemplate;
         this.cookieUtil = cookieUtil;
-        this.tokenProvider=tokenProvider;
     }
 
     @Override
@@ -80,19 +77,19 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
-        String jwt = resolveToken(httpServletRequest);
+        //String jwt = resolveToken(httpServletRequest);
 
         // Request URI
         String requestURI = httpServletRequest.getRequestURI();
 
 
-        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
-        } else {
-            logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
-        }
+//        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+//            Authentication authentication = tokenProvider.getAuthentication(jwt);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+//        } else {
+//            logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+//        }
 
 
 
@@ -288,11 +285,11 @@ public class JwtFilter extends GenericFilterBean {
         refreshToken = responseEntity.getBody();
     }
 
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
+//    private String resolveToken(HttpServletRequest request) {
+//        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+//            return bearerToken.substring(7);
+//        }
+//        return null;
+//    }
 }

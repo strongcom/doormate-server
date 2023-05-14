@@ -3,6 +3,7 @@ package com.strongcom.doormate.controller;
 import com.strongcom.doormate.domain.Reminder;
 
 import com.strongcom.doormate.dto.ReminderDto;
+import com.strongcom.doormate.dto.ReminderResponseDto;
 import com.strongcom.doormate.dto.ReminderPageRespDto;
 import com.strongcom.doormate.dto.ReminderRespDto;
 import com.strongcom.doormate.service.impl.AlarmService;
@@ -38,24 +39,26 @@ public class ReminderController {
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long reminderId, @RequestBody ReminderDto reminderDto) {
         Long savedReminder = reminderService.updateReminder(reminderId, reminderDto);
-        alarmService.deleteAlarm(reminderId);
+//        alarmService.deleteAlarm(reminderId);
         alarmService.saveAlarm(savedReminder);
         return UPDATE_REMINDER_MESSAGE;
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long reminderId) {
-        alarmService.deleteAlarm(reminderId);
+//        alarmService.deleteAlarm(reminderId);
         reminderService.deleteReminder(reminderId);
         return DELETE_REMINDER_MESSAGE;
     }
 
     @GetMapping("/today")
-    public List<Reminder> findToday() {
+    public List<ReminderResponseDto> findToday() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return alarmService.findTodayAlarm(user.getUsername());
     }
 
+    @GetMapping()
+    public List<ReminderResponseDto> findAll() {
     @GetMapping("/{id}")
     public ReminderRespDto findOne(@PathVariable("id") Long reminderId) {
 //        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

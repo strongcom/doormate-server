@@ -3,6 +3,7 @@ package com.strongcom.doormate.service.impl;
 import com.strongcom.doormate.domain.Alarm;
 import com.strongcom.doormate.domain.Reminder;
 import com.strongcom.doormate.domain.User;
+import com.strongcom.doormate.dto.ReminderResponseDto;
 import com.strongcom.doormate.exception.NotFoundReminderException;
 import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.repository.AlarmRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,28 +37,32 @@ public class AlarmService {
         List<LocalDate> dates = reminder.findByDate();
         for (LocalDate date : dates) {
             Alarm alarm = Alarm.createAlarm(date,reminder);
-            alarmRepository.save(alarm);
+            reminder.addAlarm(alarm);
+//            alarmRepository.save(alarm);
         }
         return SUCCESS_SAVED_ALARM_MESSAGE;
     }
 
     @Transactional
-    public void deleteAlarm(Long reminder_id) {
-        Reminder reminder = reminderRepository.findById(reminder_id)
-                .orElseThrow(() -> new NotFoundReminderException("해당 리마인더가 존재하지 않습니다."));
-        alarmRepository.deleteAllByReminder(reminder);
+    public void deleteOneAlarm(Alarm alarm) {
+        if (alarm.getReminder().getAlarms().size() == 1) {
+            reminderRepository.deleteById(alarm.getReminder().getReminderId());
+        }
+        alarmRepository.deleteById(alarm.getId());
     }
 
     @Transactional
-    public List<Reminder> findTodayAlarm(String username) {
+    public List<ReminderResponseDto> findTodayAlarm(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundUserException("존재하지 않는 유저입니다."));
+        System.out.println("LocalDate.now() = " + LocalTime.now());
+
         List<Alarm> todayAlarmList = alarmRepository.findAllToday(LocalDate.now());
-        List<Reminder> reminders = new ArrayList<>();
+        List<ReminderResponseDto> reminders = new ArrayList<>();
         for (Alarm alarm : todayAlarmList
         ) {
             if (alarm.getReminder().getUser().equals(user)) {
-                reminders.add(alarm.getReminder());
+                reminders.add(alarm.getReminder().toReminderResponseDto());
             }
         }
         return reminders;

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 
+@Table(name="user")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,11 +25,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(name = "username", length = 50, unique = true)
+    @Column(name = "USERNAME", length = 50, unique = true)
     private String username;
 
     @JsonIgnore
-    @Column(name = "password", length = 100)
+    @Column(name = "PASSWORD", length = 100)
     private String password;
 
     @Column(name = "nickname", length = 50)
@@ -44,11 +45,10 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
     private Set<Authority> authorities;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)  // 고아객체가 되었을 경우, 자식 엔티티 자동 삭제
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Reminder> reminders = new ArrayList<>();
 
     @Column(name = "target_token", length = 200)
     private String targetToken;
-
 
 }

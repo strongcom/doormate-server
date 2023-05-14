@@ -5,6 +5,7 @@ import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.ReminderDto;
 import com.strongcom.doormate.dto.ReminderPageRespDto;
 import com.strongcom.doormate.dto.ReminderRespDto;
+import com.strongcom.doormate.dto.ReminderResponseDto;
 import com.strongcom.doormate.exception.NotFoundReminderException;
 import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.repository.ReminderRepository;
@@ -13,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -58,11 +58,15 @@ public class ReminderService {
         Reminder reminder = reminderRepository.findById(reminderId)
                 .orElseThrow(() -> new NotFoundReminderException("해당 리마인더는 존재하지 않습니다."));
         reminder.setReminder(reminderDto);
+        reminder.cleanAlarm();
         //Reminder savedReminder = reminderRepository.save(reminder);
         return reminder.getReminderId();
     }
 
     public void deleteReminder(Long reminderId) {
+        Reminder reminder = reminderRepository.findById(reminderId).orElseThrow(()
+                -> new NotFoundReminderException("해당 리마인더는 존재하지 않습니다."));
+        reminder.cleanAlarm();
         reminderRepository.deleteById(reminderId);
     }
 

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class SchedulerService {
 
     private final AlarmRepository alarmRepository;
-    @Scheduled(cron = "59 39 1 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "59 59 23 * * *", zone = "Asia/Seoul")
     public void run() {
         alarmRepository.deleteAllByNoticeDateLessThanEqual(LocalDate.now());
         System.out.println("금일 미알림 내역 삭제");

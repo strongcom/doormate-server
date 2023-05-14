@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name="alarm")
 public class Alarm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
