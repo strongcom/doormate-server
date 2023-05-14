@@ -29,6 +29,7 @@ public class UserDto {
     private String nickname;
 
     @NotNull
+    @Size(min = 3, max = 200)
     private String targetToken;
 
 
