@@ -86,7 +86,7 @@ public class FirebaseCloudMessageService {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new NotFoundUserException(NOT_FIND_USER_MESSAGE));
         List<Alarm> alarms = alarmRepository
                 .findAllByNoticeDateAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual
-                        (now.toLocalDate(), now.toLocalTime().minusMinutes(10), now.toLocalTime());
+                        (now.toLocalDate(), now.toLocalTime(), now.toLocalTime());
         List<Reminder> reminders = new ArrayList<>();
         for (Alarm alarm : alarms
         ) {
