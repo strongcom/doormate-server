@@ -22,8 +22,6 @@ import javax.validation.Valid;
 public class UserController {
     private final RestTemplate restTemplate;
 
-    private final UserServiceImpl userServiceImpl;
-
     private final UserService userService;
 
 
