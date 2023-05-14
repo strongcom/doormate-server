@@ -5,7 +5,6 @@ import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.ReminderDto;
 import com.strongcom.doormate.dto.ReminderPageRespDto;
 import com.strongcom.doormate.dto.ReminderRespDto;
-import com.strongcom.doormate.dto.ReminderResponseDto;
 import com.strongcom.doormate.exception.NotFoundReminderException;
 import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.repository.ReminderRepository;
@@ -14,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,10 +42,14 @@ public class ReminderService {
                 .orElseThrow(() -> new NotFoundUserException("해당 유저는 존재하지 않습니다."));
         List<Reminder> reminders = reminderRepository.findAllByUser(user);
         List<ReminderPageRespDto> reminderList = new ArrayList<>();
-        for (Reminder reminder : reminders)
-            reminderList.add(reminder.setReminderPageRespDto());
-        return reminderList;
-    }
+        for (Reminder reminder : reminders) {
+            if (reminder.getAlarms().size() > 0)
+                reminderList.add(reminder.setReminderPageRespDto());
+            else reminderRepository.deleteById(reminder.getReminderId());
+        }
+
+            return reminderList;
+        }
 
     public ReminderRespDto findOneReminder(Long reminderId) {
         Reminder reminder = reminderRepository.findById(reminderId)

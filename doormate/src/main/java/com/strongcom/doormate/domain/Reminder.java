@@ -1,7 +1,8 @@
 package com.strongcom.doormate.domain;
 
 import com.strongcom.doormate.dto.ReminderDto;
-import com.strongcom.doormate.dto.ReminderResponseDto;
+import com.strongcom.doormate.dto.ReminderPageRespDto;
+import com.strongcom.doormate.dto.ReminderRespDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -3,7 +3,6 @@ package com.strongcom.doormate.controller;
 import com.strongcom.doormate.dto.ReminderDto;
 import com.strongcom.doormate.dto.ReminderPageRespDto;
 import com.strongcom.doormate.dto.ReminderRespDto;
-import com.strongcom.doormate.dto.ReminderResponseDto;
 import com.strongcom.doormate.service.impl.AlarmService;
 import com.strongcom.doormate.service.impl.ReminderService;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +49,7 @@ public class ReminderController {
     }
 
     @GetMapping("/today")
-    public List<ReminderResponseDto> findToday() {
+    public List<ReminderRespDto> findToday() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return alarmService.findTodayAlarm(user.getUsername());
     }
