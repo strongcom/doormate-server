@@ -120,6 +120,22 @@ public class Reminder {
      * 비즈니스 로직
      */
 
+
+
+    public ReminderRespDto setReminderRespDto() {
+        return ReminderRespDto.builder()
+                .reminderId(this.reminderId)
+                .title(this.title)
+                .content(this.content)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .startTime(this.startTime)
+                .endTime(this.endTime)
+                .repetitionDay(this.repetitionDay)
+                .repetitionPeriod(this.repetitionPeriod)
+                .build();
+    }
+
     public void setReminder(ReminderDto reminderDto) {
         setUser(this.user);
         addSubtitle(reminderDto.getRepetitionDay(), reminderDto.getRepetitionPeriod(),

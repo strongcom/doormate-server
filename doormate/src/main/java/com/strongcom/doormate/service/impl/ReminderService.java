@@ -40,6 +40,12 @@ public class ReminderService {
         return reminderRepository.findAllByUser(user);
     }
 
+    public ReminderRespDto findOneReminder(Long reminderId) {
+        Reminder reminder = reminderRepository.findById(reminderId)
+                .orElseThrow(() -> new NotFoundReminderException("해당 리마인더는 존재하지 않습니다."));
+        return reminder.setReminderRespDto();
+    }
+
     @Transactional
     public Long updateReminder(Long reminderId, ReminderDto reminderDto) {
         Reminder reminder = reminderRepository.findById(reminderId)
