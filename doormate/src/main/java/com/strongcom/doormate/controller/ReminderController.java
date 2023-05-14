@@ -62,8 +62,8 @@ public class ReminderController {
         return reminderService.findOneReminder(reminderId);
     }
 
-    @GetMapping()
-    public List<ReminderPageRespDto> findAll() {
+    @GetMapping("/{id}")
+    public List<ReminderPageRespDto> findAll(@PathVariable Long id) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return reminderService.findAllReminder(user.getUsername());
     }

@@ -156,7 +156,7 @@ public class Reminder {
         return ReminderPageRespDto.builder()
                 .reminderId(this.reminderId)
                 .title(this.title)
-                .content(this.content)
+                .subTitle(this.subTitle)
                 .build();
     }
 
