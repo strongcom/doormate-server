@@ -48,7 +48,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Reminder> reminders = new ArrayList<>();
 
-    @Column(name = "target_token", length = 200)
+    @Column(name = "target_token", length = 200, unique = true)
     private String targetToken;
 
 }
