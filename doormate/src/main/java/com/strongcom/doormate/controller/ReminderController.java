@@ -49,7 +49,7 @@ public class ReminderController {
     }
 
     @GetMapping("/today")
-    public List<ReminderRespDto> findToday() {
+    public List<ReminderPageRespDto> findToday() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return alarmService.findTodayAlarm(user.getUsername());
     }
