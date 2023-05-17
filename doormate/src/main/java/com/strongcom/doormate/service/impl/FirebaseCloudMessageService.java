@@ -10,7 +10,6 @@ import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.FcmMessage;
 import com.strongcom.doormate.dto.RequestDTO;
 import com.strongcom.doormate.exception.NotFoundAlarmException;
-import com.strongcom.doormate.exception.NotFoundReminderException;
 import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.repository.AlarmRepository;
 import com.strongcom.doormate.repository.ReminderRepository;
@@ -87,7 +86,7 @@ public class FirebaseCloudMessageService {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new NotFoundUserException(NOT_FIND_USER_MESSAGE));
         List<Alarm> alarms = alarmRepository
                 .findAllByNoticeDateAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual
-                        (now.toLocalDate(), now.toLocalTime().minusMinutes(10), now.toLocalTime());
+                        (now.toLocalDate(), now.toLocalTime(), now.toLocalTime());
         List<Reminder> reminders = new ArrayList<>();
         for (Alarm alarm : alarms
         ) {
@@ -98,7 +97,7 @@ public class FirebaseCloudMessageService {
 //            alarmRepository.deleteById(alarm.getId());
         }
         if (reminders.size() == 0) {
-            throw new NotFoundReminderException("현재 예정된 알림이 없습니다.");
+            throw new NotFoundAlarmException("현재 예정된 알림이 없습니다.");
         }
         return reminders;
     }
@@ -107,7 +106,7 @@ public class FirebaseCloudMessageService {
     public RequestDTO reminderToFcmMessage(Long id) {
         // 알림 서비스에 넘어온 리마인더 id 값을 받아 리마인더 조회후, requestDto에 담아서 넘기기
         Reminder reminder = reminderRepository.findById(id)
-                .orElseThrow(() -> new NotFoundReminderException(NOT_FIND_REMINDER_MESSAGE));
+                .orElseThrow(() -> new NotFoundAlarmException(NOT_FIND_REMINDER_MESSAGE));
         return RequestDTO.builder()
                 .title(reminder.getTitle())
                 .body(reminder.getContent())

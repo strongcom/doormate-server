@@ -49,7 +49,7 @@ public class ReminderController {
     }
 
     @GetMapping("/today")
-    public List<ReminderRespDto> findToday() {
+    public List<ReminderPageRespDto> findToday() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return alarmService.findTodayAlarm(user.getUsername());
     }
@@ -60,8 +60,8 @@ public class ReminderController {
         return reminderService.findOneReminder(reminderId);
     }
 
-    @GetMapping("/{id}")
-    public List<ReminderPageRespDto> findAll(@PathVariable Long id) {
+    @GetMapping()
+    public List<ReminderPageRespDto> findAll() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return reminderService.findAllReminder(user.getUsername());
     }

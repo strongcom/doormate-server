@@ -179,16 +179,15 @@ public class Reminder {
 
     // 리마인더 날짜 리스트를 만들어야함 (매일, 매주, 매달, 매년)
     public void addSubtitle(String repetitionDay, RepetitionPeriod repetitionPeriod, LocalTime startTime, LocalTime endTime) {
-        String repetition = "";
+        String repetition = "알람, ";
 
-        if (repetitionPeriod == RepetitionPeriod.DAILY) repetition = "매일" + " " + startTime + " - " + endTime + " 사이 알림";
+        if (repetitionPeriod == RepetitionPeriod.DAILY) repetition += "매일" + " " + startTime + " - " + endTime + " 사이 알림";
         if (repetitionPeriod == RepetitionPeriod.WEEKLY)
-            repetition = "매주 " + RepetitionDay.toDay(repetitionDay) + " " + startTime + " - " + endTime + " 사이 알림";
-        else if (repetitionPeriod == RepetitionPeriod.MONTHLY) repetition = "매달" + " " + startTime + " - " + endTime + " 사이 알림";
-        else if (repetitionPeriod == RepetitionPeriod.YEARLY) repetition = "매년" + " " + startTime + " - " + endTime + " 사이 알림";
-        else if (repetitionPeriod == RepetitionPeriod.BASIC) repetition = "";
+            repetition += "매주 " + RepetitionDay.toDay(repetitionDay) + " " + startTime + " - " + endTime + " 사이 알림";
+        else if (repetitionPeriod == RepetitionPeriod.MONTHLY) repetition += "매달" + " " + startTime + " - " + endTime + " 사이 알림";
+        else if (repetitionPeriod == RepetitionPeriod.YEARLY) repetition += "매년" + " " + startTime + " - " + endTime + " 사이 알림";
+        else if (repetitionPeriod == RepetitionPeriod.BASIC) repetition += "일회성 알림";
 
-        repetition = "알람 ";
         this.subTitle = repetition;
     }
 
