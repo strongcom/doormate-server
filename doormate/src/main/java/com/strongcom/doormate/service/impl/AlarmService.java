@@ -56,7 +56,7 @@ public class AlarmService {
                 .orElseThrow(() -> new NotFoundUserException("존재하지 않는 유저입니다."));
 
         List<Alarm> todayAlarmList = alarmRepository.findAllToday(LocalDate.now());
-        List<ReminderPageRespDto> reminders = new ArrayList<>();제
+        List<ReminderPageRespDto> reminders = new ArrayList<>();
         for (Alarm alarm : todayAlarmList
         ) {
             if (alarm.getReminder().getUser().equals(user)) {
