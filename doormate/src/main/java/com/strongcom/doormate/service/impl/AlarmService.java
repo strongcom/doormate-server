@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +54,6 @@ public class AlarmService {
     public List<ReminderPageRespDto> findTodayAlarm(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundUserException("존재하지 않는 유저입니다."));
-        System.out.println("LocalDate.now() = " + LocalTime.now());
 
         List<Alarm> todayAlarmList = alarmRepository.findAllToday(LocalDate.now());
         List<ReminderPageRespDto> reminders = new ArrayList<>();
