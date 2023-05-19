@@ -18,7 +18,7 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
     List<Alarm> findAllByNoticeDateAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(LocalDate noticeDate, LocalTime now1, LocalTime now2);
 
-    @Query(value = "select alarm from Alarm alarm where alarm.noticeDate=:today")
+    @Query(value = "select a from alarm a where a.noticeDate=:today")
     List<Alarm> findAllToday(@Param("today") LocalDate today);
 
     @Transactional

@@ -2,8 +2,12 @@ package com.strongcom.doormate.controller;
 
 import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.UserDto;
+import com.strongcom.doormate.kakao.dto.AddInfoRequest;
+import com.strongcom.doormate.kakao.dto.CommonResponse;
 import com.strongcom.doormate.service.UserService;
 import com.strongcom.doormate.service.impl.UserServiceImpl;
+import io.jsonwebtoken.Claims;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -25,8 +29,6 @@ public class UserController {
     private final UserService userService;
 
 
-
-
     @PostMapping("/add")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         userService.createUser(userDto);
@@ -35,22 +37,16 @@ public class UserController {
 
     }
 
+    @PostMapping("/addInfo")
+    public ResponseEntity<CommonResponse> addUserInfo(@Valid @RequestBody AddInfoRequest addInfoRequest, @RequestAttribute Claims claims) {
+        Integer userId = (int) claims.get("userId");
+        Long longId = Long.valueOf(userId);
+        userService.addUserInfo(addInfoRequest, longId);
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<UserDto> deleteUser(HttpServletRequest httpServletRequest
-            , HttpServletResponse httpServletResponse
-            , @Valid @RequestBody UserDto userDto) throws Exception {
-
-        //HttpEntity 생성
-        HttpEntity<UserDto> request = new HttpEntity<>(userDto);
-
-        //API 호출
-        ResponseEntity<UserDto> responseEntity = restTemplate.postForEntity( "http://localhost:8080/user/withdraw", request , UserDto.class);
-
-
-        return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.OK);
-
+        CommonResponse response = new CommonResponse("유저 정보 추가에 성공했습니다.");
+        return new ResponseEntity(response, HttpStatus.OK);
     }
+
 
 
 }

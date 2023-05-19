@@ -7,8 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "authority")
+@Entity(name = "authority")
 @Data
 @Builder
 @AllArgsConstructor
