@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.Set;
 
 
-@Table(name="user")
-@Entity
+
+@Entity(name="user")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
 @Setter
 @EqualsAndHashCode
-public class User {
+public class User  {
 
     @JsonIgnore
     @Id
@@ -38,6 +38,8 @@ public class User {
     @Column(name = "token", length = 200)
     private String token;
 
+    private String providerId;  // oauth2를 이용할 경우 아이디값
+
     @ManyToMany
     @JoinTable(
             name = "user_authority",
@@ -50,5 +52,7 @@ public class User {
 
     @Column(name = "target_token", length = 200, unique = true)
     private String targetToken;
+
+
 
 }

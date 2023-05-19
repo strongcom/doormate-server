@@ -8,10 +8,9 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Entity
+@Entity(name="alarm")
 @Getter
 @NoArgsConstructor
-@Table(name="alarm")
 public class Alarm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
