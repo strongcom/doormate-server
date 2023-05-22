@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.exception.DuplicateException;
 import com.strongcom.doormate.exception.DuplicateUserException;
+import com.strongcom.doormate.exception.NotFoundAuthorizationException;
 import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.kakao.dto.KakaoGetUserDto;
 import com.strongcom.doormate.repository.UserRepository;
@@ -43,6 +44,9 @@ public class KakaoService {
             //accessToken이 유효하면 200 OK
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);
+            if (responseCode != 200) {
+                throw new NotFoundAuthorizationException("유효한 토큰값이 아닙니다.");
+            }
 
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
