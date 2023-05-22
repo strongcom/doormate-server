@@ -7,6 +7,7 @@ import com.strongcom.doormate.service.impl.AlarmService;
 import com.strongcom.doormate.service.impl.FirebaseCloudMessageService;
 import com.strongcom.doormate.service.impl.ReminderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.List;
 
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class FCMController {
@@ -23,6 +26,7 @@ public class FCMController {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final ReminderService reminderService;
     private final AlarmService alarmService;
+
 
     @PostMapping("/api/fcm")
     public ResponseEntity<Message> pushMessage(@RequestBody AlarmDto alarmDto) throws IOException {
@@ -37,6 +41,7 @@ public class FCMController {
                     reminder.getTitle(),
                     reminder.getContent());
         }
+        log.info("푸시알림 전송 완료");
         return ResponseEntity.ok().body(new Message("푸시 알림 전송 완료"));
     }
 }
