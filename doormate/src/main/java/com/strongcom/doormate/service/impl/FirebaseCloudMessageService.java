@@ -36,7 +36,7 @@ public class FirebaseCloudMessageService {
     private final ObjectMapper objectMapper;
 
     private static final String NOT_FIND_REMINDER_MESSAGE = "현재 알림이 예정된 리마인더가 존재하지 않습니다.";
-    private static final String NOT_FIND_USER_MESSAGE = "해당 회원의 알람 리스트가 존재하지 않습니다.";
+    private static final String NOT_FIND_USER_MESSAGE = "해당 userName인 회원은 존재하지 않습니다.";
 
     public void sendMessageTo(String targetToken, String title, String body) throws IOException {
         String message = makeMessage(targetToken, title, body);
