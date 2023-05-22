@@ -64,9 +64,7 @@ public class FirebaseCloudMessageService {
                                 .title(title)
                                 .body(body)
                                 .build()
-                        ).android("{\"priority\":\"high\",\"notification\":{\"sound\":\"default\"}}\n")
-                        .apns("{\"headers\":{},\"payload\":{\"aps\":{\"sound\":\"default\",\"content-available\":1}}}\n")
-                        .build()).validateOnly(false).build();
+                        ).build()).validateOnly(false).build();
 
         return objectMapper.writeValueAsString(fcmMessage);
     }
