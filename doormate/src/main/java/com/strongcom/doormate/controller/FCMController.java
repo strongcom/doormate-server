@@ -1,5 +1,6 @@
 package com.strongcom.doormate.controller;
 
+import com.strongcom.doormate.domain.Message;
 import com.strongcom.doormate.dto.AlarmDto;
 import com.strongcom.doormate.domain.Reminder;
 import com.strongcom.doormate.service.impl.AlarmService;
@@ -24,7 +25,7 @@ public class FCMController {
     private final AlarmService alarmService;
 
     @PostMapping("/api/fcm")
-    public ResponseEntity<String> pushMessage(@RequestBody AlarmDto alarmDto) throws IOException {
+    public ResponseEntity<Message> pushMessage(@RequestBody AlarmDto alarmDto) throws IOException {
         List<Reminder> reminders = firebaseCloudMessageService.findByNow(alarmDto.getUserName(), alarmDto.getToday());
         for (Reminder reminder : reminders
         ) {
@@ -36,6 +37,6 @@ public class FCMController {
                     reminder.getTitle(),
                     reminder.getContent());
         }
-        return ResponseEntity.ok().body("푸시 알림 전송 완료");
+        return ResponseEntity.ok().body(new Message("푸시 알림 전송 완료"));
     }
 }

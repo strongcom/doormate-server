@@ -1,5 +1,6 @@
 package com.strongcom.doormate.controller;
 
+import com.strongcom.doormate.domain.Message;
 import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.ReminderDto;
 import com.strongcom.doormate.dto.ReminderPageRespDto;
@@ -10,6 +11,7 @@ import com.strongcom.doormate.service.impl.ReminderService;
 import com.strongcom.doormate.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,27 +32,28 @@ public class ReminderController {
 
 
     @PostMapping()
-    public String create(@RequestHeader HttpHeaders token, @RequestBody ReminderDto reminderRequestDto) throws Exception {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Message create(@RequestHeader HttpHeaders token, @RequestBody ReminderDto reminderRequestDto) throws Exception {
         User user = userService.findByKakaoUser(token);
         Long savedReminderId = reminderService.saveReminder(user.getUsername(), reminderRequestDto);
         alarmService.saveAlarm(savedReminderId);
-        return CREATE_REMINDER_MESSAGE;
+        return new Message(CREATE_REMINDER_MESSAGE);
     }
 
 
     @PutMapping("/{id}")
-    public String update(@PathVariable("id") Long reminderId, @RequestBody ReminderDto reminderDto) {
+    public Message update(@PathVariable("id") Long reminderId, @RequestBody ReminderDto reminderDto) {
         Long savedReminder = reminderService.updateReminder(reminderId, reminderDto);
 //        alarmService.deleteAlarm(reminderId);
         alarmService.saveAlarm(savedReminder);
-        return UPDATE_REMINDER_MESSAGE;
+        return new Message(UPDATE_REMINDER_MESSAGE);
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") Long reminderId) {
+    public Message delete(@PathVariable("id") Long reminderId) {
 //        alarmService.deleteAlarm(reminderId);
         reminderService.deleteReminder(reminderId);
-        return DELETE_REMINDER_MESSAGE;
+        return new Message(DELETE_REMINDER_MESSAGE);
     }
 
     @GetMapping("/today")
