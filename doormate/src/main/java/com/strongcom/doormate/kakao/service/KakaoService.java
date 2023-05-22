@@ -10,6 +10,7 @@ import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.kakao.dto.KakaoGetUserDto;
 import com.strongcom.doormate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KakaoService {
 
     private final UserRepository userRepository;
@@ -43,7 +45,7 @@ public class KakaoService {
 
             //accessToken이 유효하면 200 OK
             int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
+            log.info("responseCode : " + responseCode);
             if (responseCode != 200) {
                 throw new NotFoundAuthorizationException("유효한 토큰값이 아닙니다.");
             }
@@ -94,13 +96,14 @@ public class KakaoService {
         return "username 등록완료, 회원가입 성공";
     }
 
-    public String joinKakaoUser(String targetToken, KakaoGetUserDto kakaoGetUserDto) {
+    public String joinKakaoUser(String targetToken, String refreshToken, KakaoGetUserDto kakaoGetUserDto) {
         Optional<User> kakaoId = userRepository.findByKakaoId(kakaoGetUserDto.getKakaoId());
         if(kakaoId.isPresent()) throw new DuplicateUserException("가입된 유저입니다.");
         User newUser = User.builder()
                 .kakaoId(kakaoGetUserDto.getKakaoId())
                 .nickname(kakaoGetUserDto.getNickName())
                 .targetToken(targetToken)
+                .refreshToken(refreshToken)
                 .build();
         User save = userRepository.save(newUser);
         return "userName 요청";

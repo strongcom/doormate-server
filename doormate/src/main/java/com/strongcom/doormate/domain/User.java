@@ -54,12 +54,15 @@ public class User {
     @Column(name = "target_token", length = 200, unique = true)
     private String targetToken;
 
+    private String refreshToken;
+
 
     @Builder
-    public User(Long kakaoId, String nickname, String targetToken) {
+    public User(Long kakaoId, String nickname, String targetToken, String refreshToken) {
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.targetToken = targetToken;
+        this.refreshToken = refreshToken;
     }
 
     public void setKakaoUser(String userName) {
