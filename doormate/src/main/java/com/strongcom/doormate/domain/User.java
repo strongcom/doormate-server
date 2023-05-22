@@ -25,6 +25,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Column
+    private Long kakaoId;
+
     @Column(name = "USERNAME", length = 50, unique = true)
     private String username;
 
@@ -51,4 +54,15 @@ public class User {
     @Column(name = "target_token", length = 200, unique = true)
     private String targetToken;
 
+
+    @Builder
+    public User(Long kakaoId, String nickname, String targetToken) {
+        this.kakaoId = kakaoId;
+        this.nickname = nickname;
+        this.targetToken = targetToken;
+    }
+
+    public void setKakaoUser(String userName) {
+        this.username = userName;
+    }
 }

@@ -24,7 +24,7 @@ public class FCMController {
     private final AlarmService alarmService;
 
     @PostMapping("/api/fcm")
-    public ResponseEntity pushMessage(@RequestBody AlarmDto alarmDto) throws IOException {
+    public ResponseEntity<String> pushMessage(@RequestBody AlarmDto alarmDto) throws IOException {
         List<Reminder> reminders = firebaseCloudMessageService.findByNow(alarmDto.getUserName(), alarmDto.getToday());
         for (Reminder reminder : reminders
         ) {
