@@ -46,8 +46,9 @@ public class KakaoService {
 
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-            conn.setRequestProperty("Authorization", "Bearer " + token); //전송할 header 작성, access_token전송
+            conn.setRequestProperty("Authorization", token); //전송할 header 작성, access_token전송
 
+            log.info("유저정보 조회를 위해 카카오로 보낸 access 토큰 : " + token);
             //accessToken이 유효하면 200 OK
             int responseCode = conn.getResponseCode();
             log.info("responseCode : " + responseCode);

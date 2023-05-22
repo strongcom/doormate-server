@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 
 @Slf4j
@@ -62,8 +61,8 @@ public class UserServiceImpl implements UserService {
 
 
     public User findByKakaoUser(HttpHeaders token) throws Exception {
-        String authorization = Objects.requireNonNull(token.getFirst("Authorization")).substring(7);
-        log.info("accessToken = " + authorization);
+        String authorization = token.getFirst("Authorization");
+        log.info("현재 로그인한 유저의 accessToken = " + authorization);
         KakaoGetUserDto kakaoUser = kakaoService.createKakaoUser(authorization);
         User user = userRepository.findByKakaoId(kakaoUser.getKakaoId()).orElseThrow(()
                 -> new NotFoundUserException("회원정보가 존재하지 않습니다."));
