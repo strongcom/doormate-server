@@ -17,6 +17,8 @@ public class FcmMessage {
     public static class Message {
         private Notification notification;
         private String token;
+        private String android;
+        private String apns;
     }
 
     @Builder
@@ -26,4 +28,5 @@ public class FcmMessage {
         private String title;
         private String body;
     }
+
 }
