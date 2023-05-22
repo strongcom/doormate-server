@@ -4,6 +4,7 @@ import com.strongcom.doormate.domain.Authority;
 import com.strongcom.doormate.domain.Reminder;
 import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.UserDto;
+import com.strongcom.doormate.exception.NotFoundAuthorizationException;
 import com.strongcom.doormate.exception.NotFoundUserException;
 import com.strongcom.doormate.kakao.dto.KakaoGetUserDto;
 import com.strongcom.doormate.kakao.service.KakaoService;
@@ -60,6 +61,10 @@ public class UserServiceImpl implements UserService {
 
     public User findByKakaoUser(HttpHeaders token) throws Exception {
         String authorization = token.getFirst("Authorization");
+        System.out.println("authorization = " + authorization);
+        if (authorization == null) {
+            throw new NotFoundAuthorizationException("엑세스토큰값이 존재하지 않습니다.");
+        }
         KakaoGetUserDto kakaoUser = kakaoService.createKakaoUser(authorization);
         User user = userRepository.findByKakaoId(kakaoUser.getKakaoId()).orElseThrow(()
                 -> new NotFoundUserException("회원정보가 존재하지 않습니다."));

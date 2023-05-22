@@ -2,13 +2,15 @@ package com.strongcom.doormate.controller;
 
 import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.UserDto;
-import com.strongcom.doormate.service.UserService;
+import com.strongcom.doormate.dto.UserInfoRespDto;
+import com.strongcom.doormate.kakao.service.KakaoService;
+import com.strongcom.doormate.repository.UserRepository;
 import com.strongcom.doormate.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,9 +22,11 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    private final UserRepository userRepository;
+    private final KakaoService kakaoService;
     private final RestTemplate restTemplate;
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
 
 
@@ -50,6 +54,17 @@ public class UserController {
 
         return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.OK);
 
+    }
+
+    @GetMapping()
+    public ResponseEntity<UserInfoRespDto> getUserNameAndNickname(@RequestHeader HttpHeaders token) throws Exception {
+        User user = userService.findByKakaoUser(token);
+        UserInfoRespDto userInfoRespDto= UserInfoRespDto.builder()
+                .userName(user.getUsername())
+                .nickName(user.getNickname())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userInfoRespDto);
     }
 
 

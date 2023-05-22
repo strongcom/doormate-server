@@ -13,6 +13,7 @@ public class DuplicateUserException extends RuntimeException {
         super(cause);
     }
 
-    public DuplicateUserException(String s) {
+    public DuplicateUserException(String message) {
+        super(message);
     }
 }
