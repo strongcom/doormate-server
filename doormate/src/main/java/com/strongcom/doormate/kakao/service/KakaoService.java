@@ -2,6 +2,7 @@ package com.strongcom.doormate.kakao.service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.strongcom.doormate.domain.Message;
 import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.exception.DuplicateException;
 import com.strongcom.doormate.exception.DuplicateUserException;
@@ -28,6 +29,10 @@ public class KakaoService {
 
     private final UserRepository userRepository;
 
+    private static final String NOT_TOKEN_EXIST_MESSAGE = "유효한 토큰값이 아닙니다.";
+    private static final String SUCCESS_ADD_USER_MESSAGE = "username 등록완료, 회원가입 성공";
+    private static final String REQUEST_USERNAME_MESSAGE = "userName 요청";
+
     public KakaoGetUserDto createKakaoUser(String token) throws Exception {
 
         String reqURL = "https://kapi.kakao.com/v2/user/me";
@@ -47,7 +52,7 @@ public class KakaoService {
             int responseCode = conn.getResponseCode();
             log.info("responseCode : " + responseCode);
             if (responseCode != 200) {
-                throw new NotFoundAuthorizationException("유효한 토큰값이 아닙니다.");
+                throw new NotFoundAuthorizationException(NOT_TOKEN_EXIST_MESSAGE);
             }
 
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
@@ -58,7 +63,7 @@ public class KakaoService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
-            System.out.println("response body : " + result);
+            log.info("response body : " + result);
 
             //Gson 라이브러리로 JSON파싱
             JsonParser parser = new JsonParser();
@@ -68,9 +73,7 @@ public class KakaoService {
 //            boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile_nickname_needs_agreement").getAsBoolean();
             nickName = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("nickname").getAsString();
 
-            System.out.println("id : " + id);
-            System.out.println("nickName : " + nickName);
-
+            log.info("id : " + id + ", nickName : " + nickName);
 
             br.close();
 
@@ -85,7 +88,7 @@ public class KakaoService {
     }
 
     @Transactional
-    public String setUserName(Long userId, String userName) {
+    public Message setUserName(Long userId, String userName) {
         User kakaoUser = userRepository.findByKakaoId(userId).orElseThrow(() -> new NotFoundUserException("존재하지 않는 유저입니다."));
         Optional<User> savedUser = userRepository.findByUsername(userName);
         if (savedUser.isPresent()) {
@@ -93,10 +96,10 @@ public class KakaoService {
         }
         kakaoUser.setKakaoUser(userName);
 
-        return "username 등록완료, 회원가입 성공";
+        return new Message(SUCCESS_ADD_USER_MESSAGE);
     }
 
-    public String joinKakaoUser(String targetToken, String refreshToken, KakaoGetUserDto kakaoGetUserDto) {
+    public Message joinKakaoUser(String targetToken, String refreshToken, KakaoGetUserDto kakaoGetUserDto) {
         Optional<User> kakaoId = userRepository.findByKakaoId(kakaoGetUserDto.getKakaoId());
         if(kakaoId.isPresent()) throw new DuplicateUserException("가입된 유저입니다.");
         User newUser = User.builder()
@@ -106,6 +109,6 @@ public class KakaoService {
                 .refreshToken(refreshToken)
                 .build();
         User save = userRepository.save(newUser);
-        return "userName 요청";
+        return new Message(REQUEST_USERNAME_MESSAGE);
     }
 }
