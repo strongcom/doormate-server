@@ -41,6 +41,9 @@ public class User {
     @Column(name = "token", length = 200)
     private String token;
 
+    @Column
+    private String image_url;
+
     @ManyToMany
     @JoinTable(
             name = "user_authority",
@@ -58,11 +61,12 @@ public class User {
 
 
     @Builder
-    public User(Long kakaoId, String nickname, String targetToken, String refreshToken) {
+    public User(Long kakaoId, String nickname, String targetToken, String refreshToken, String image_url) {
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.targetToken = targetToken;
         this.refreshToken = refreshToken;
+        this.image_url = image_url;
     }
 
     public void setKakaoUser(String userName) {
