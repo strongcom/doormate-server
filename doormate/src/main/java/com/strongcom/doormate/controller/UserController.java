@@ -62,6 +62,7 @@ public class UserController {
         UserInfoRespDto userInfoRespDto= UserInfoRespDto.builder()
                 .userName(user.getUsername())
                 .nickName(user.getNickname())
+                .image_url(user.getImage_url())
                 .build();
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userInfoRespDto);
