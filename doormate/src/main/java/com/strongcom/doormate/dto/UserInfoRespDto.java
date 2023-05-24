@@ -12,5 +12,6 @@ public class UserInfoRespDto {
 
     private String userName;
     private String nickName;
+    private String image_url;
 
 }
