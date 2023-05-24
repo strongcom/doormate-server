@@ -111,6 +111,7 @@ public class KakaoService {
                 .nickname(kakaoGetUserDto.getNickName())
                 .targetToken(targetToken)
                 .refreshToken(refreshToken)
+                .image_url(kakaoGetUserDto.getImage())
                 .build();
         User save = userRepository.save(newUser);
         return new Message(REQUEST_USERNAME_MESSAGE);
