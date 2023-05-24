@@ -11,4 +11,5 @@ import lombok.Getter;
 public class KakaoGetUserDto {
     private Long kakaoId;
     private String nickName;
+    private String image;
 }

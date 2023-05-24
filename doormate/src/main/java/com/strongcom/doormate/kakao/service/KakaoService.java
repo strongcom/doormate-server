@@ -38,6 +38,7 @@ public class KakaoService {
         String reqURL = "https://kapi.kakao.com/v2/user/me";
         Long id = null;
         String nickName = "";
+        String image = "";
 
         //access_token을 이용하여 사용자 정보 조회
         try {
@@ -73,8 +74,9 @@ public class KakaoService {
             id = element.getAsJsonObject().get("id").getAsLong();
 //            boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile_nickname_needs_agreement").getAsBoolean();
             nickName = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("nickname").getAsString();
+            image = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("profile_image_url").getAsString();
 
-            log.info("id : " + id + ", nickName : " + nickName);
+            log.info("id : " + id + ", nickName : " + nickName + ", image = " + image);
 
             br.close();
 
@@ -85,6 +87,7 @@ public class KakaoService {
         return KakaoGetUserDto.builder()
                 .kakaoId(id)
                 .nickName(nickName)
+                .image(image)
                 .build();
     }
 
