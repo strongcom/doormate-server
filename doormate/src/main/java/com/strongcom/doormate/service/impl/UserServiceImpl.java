@@ -1,6 +1,7 @@
 package com.strongcom.doormate.service.impl;
 
 import com.strongcom.doormate.domain.Authority;
+import com.strongcom.doormate.domain.Message;
 import com.strongcom.doormate.domain.Reminder;
 import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.UserDto;
@@ -67,5 +68,14 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByKakaoId(kakaoUser.getKakaoId()).orElseThrow(()
                 -> new NotFoundUserException("회원정보가 존재하지 않습니다."));
         return user;
+    }
+
+
+    @Transactional
+    public Message deleteUser(HttpHeaders token) throws Exception {
+        String authorization = token.getFirst("Authorization");
+        KakaoGetUserDto kakaoUser = kakaoService.createKakaoUser(authorization);
+        userRepository.deleteByKakaoId(kakaoUser.getKakaoId());
+        return new Message("유저가 탈퇴 완료");
     }
 }

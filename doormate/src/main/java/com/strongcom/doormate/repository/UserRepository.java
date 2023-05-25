@@ -24,5 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByKakaoId(Long id);
 
+    void deleteByKakaoId(Long id);
+
 }
 
