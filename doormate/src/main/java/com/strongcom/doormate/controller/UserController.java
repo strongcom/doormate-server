@@ -1,5 +1,6 @@
 package com.strongcom.doormate.controller;
 
+import com.strongcom.doormate.domain.Message;
 import com.strongcom.doormate.domain.User;
 import com.strongcom.doormate.dto.UserDto;
 import com.strongcom.doormate.dto.UserInfoRespDto;
@@ -29,8 +30,6 @@ public class UserController {
     private final UserServiceImpl userService;
 
 
-
-
     @PostMapping("/add")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         userService.createUser(userDto);
@@ -49,7 +48,7 @@ public class UserController {
         HttpEntity<UserDto> request = new HttpEntity<>(userDto);
 
         //API 호출
-        ResponseEntity<UserDto> responseEntity = restTemplate.postForEntity( "http://localhost:8080/user/withdraw", request , UserDto.class);
+        ResponseEntity<UserDto> responseEntity = restTemplate.postForEntity("http://localhost:8080/user/withdraw", request, UserDto.class);
 
 
         return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.OK);
@@ -59,7 +58,7 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<UserInfoRespDto> getUserNameAndNickname(@RequestHeader HttpHeaders token) throws Exception {
         User user = userService.findByKakaoUser(token);
-        UserInfoRespDto userInfoRespDto= UserInfoRespDto.builder()
+        UserInfoRespDto userInfoRespDto = UserInfoRespDto.builder()
                 .userName(user.getUsername())
                 .nickName(user.getNickname())
                 .image_url(user.getImage_url())
@@ -68,5 +67,10 @@ public class UserController {
                 .body(userInfoRespDto);
     }
 
-
+    @DeleteMapping()
+    public ResponseEntity<Message> deleteKakaoUser(@RequestHeader HttpHeaders token) throws Exception {
+        Message message = userService.deleteUser(token);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(message);
+    }
 }
